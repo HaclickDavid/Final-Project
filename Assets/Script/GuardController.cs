@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GuardPatrol : MonoBehaviour
 {
     public Transform patrolPoint;
@@ -159,6 +159,7 @@ public class GuardPatrol : MonoBehaviour
                         if (angleToPlayer <= alertAngle / 2 && angleToPlayer >= -alertAngle / 2)
                         {
                             Debug.Log("Game Over");
+                            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
                         }
                     }
                 }

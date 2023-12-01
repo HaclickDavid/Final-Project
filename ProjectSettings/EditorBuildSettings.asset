@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scene/KaGaMii_Test_Scene.unity
     guid: 53a933e906c9940f0ba17f8add4a3c47
   - enabled: 1
+    path: Assets/Scene/Fail.unity
+    guid: 5025aaa134d964b1e9a53bd72d279e47
+  - enabled: 1
     path: Assets/Scene/Finish Screen.unity
     guid: 5990dabcd258e475085a410825e7cdd2
   m_configObjects: {}
