@@ -25,6 +25,7 @@ public class PlayerCam : MonoBehaviour
     Vector2 currentDir;
     Vector2 currentDirVelocity;
     Vector3 velocity;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -41,7 +42,7 @@ public class PlayerCam : MonoBehaviour
     {
         UpdateMouse();
         UpdateMove();
-        Debug.Log(isGrounded); 
+        // Debug.Log(isGrounded);
     }
 
     void UpdateMouse()
@@ -53,10 +54,11 @@ public class PlayerCam : MonoBehaviour
         playerCamera.localEulerAngles = Vector3.right * cameraCap;
         transform.Rotate(Vector3.up * currentMouseDelta.x * mouseSensitivity);
     }
+    
 
     void UpdateMove()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, ground);
+        isGrounded = Physics.CheckSphere(groundCheck.position, 0.1f, ground);
 
         Vector2 targetDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         targetDir.Normalize();
@@ -69,7 +71,7 @@ public class PlayerCam : MonoBehaviour
         {
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-        if (isGrounded! && controller.velocity.y < -1f)
+        if (!isGrounded && controller.velocity.y < -1f)
         {
             velocityY = -8f;
         }
