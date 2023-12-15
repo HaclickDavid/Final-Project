@@ -7,7 +7,6 @@ TagManager:
   - Obstacle
   - Ground
   - Hostage
-  - Guard
   layers:
   - Default
   - TransparentFX
