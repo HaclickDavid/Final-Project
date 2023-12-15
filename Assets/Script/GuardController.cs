@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 public class GuardPatrol : MonoBehaviour
 {
     public Transform patrolPoint;
@@ -16,9 +16,13 @@ public class GuardPatrol : MonoBehaviour
     private Vector3 targetPosition;
     private Vector3 direction;
     private Light sightLight;
+    private bool isCrash = false;
+    private Rigidbody rb;
 
     void Start() 
     {
+        rb = GetComponent<Rigidbody>();
+
         if (patrolPoint == null)
         {
             // 生成一個新的空物體
@@ -53,7 +57,7 @@ public class GuardPatrol : MonoBehaviour
         float distance = Vector3.Distance(transform.position, patrolPoint.position);
         timerWander += Time.deltaTime;
         timerStop += Time.deltaTime;
-        if (timerWander >= changeDirectionInterval || distance >= maxPatrolDistance)
+        if (timerWander >= changeDirectionInterval || distance >= maxPatrolDistance || isCrash)
         {
             // 在指定半徑內隨機選擇一個目標點
             Vector2 randomPoint = Random.insideUnitCircle.normalized * maxPatrolDistance;
@@ -74,34 +78,49 @@ public class GuardPatrol : MonoBehaviour
         {
             if (timerStop > watchAroundInterval+5){timerStop = 0f;} // 可以改數字用來挑整停留的區間
         }
-        else{transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
+        //else{transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);}
+
+        // 使用物理引擎的力来移动物体
+        else{rb.MovePosition(rb.position + transform.TransformDirection(Vector3.forward) * moveSpeed * Time.deltaTime);}
         
     }
 
-    //     void OnDrawGizmosSelected()
-    // {
-    //     if (patrolPoint != null)
-    //     {
-    //         // 以不同顏色繪製移動範圍
-    //         Gizmos.color = Color.blue;
-    //         Gizmos.DrawWireSphere(patrolPoint.position, maxPatrolDistance);
-    //     }
-    //     else
-    //     {
-    //         // 以不同顏色繪製移動範圍
-    //         Gizmos.color = Color.blue;
-    //         Gizmos.DrawWireSphere(transform.position, maxPatrolDistance);
-    //     }
+        private void OnCollisionEnter(Collision collision)
+    {
+        // 當與其他物體碰撞時呼叫這個方法
+        if (collision.collider.CompareTag("Obstacle")){isCrash = true;}
+        else{isCrash = false;}
+    }
 
-    //     // 移動目標
-    //     Gizmos.color = Color.green;
-    //     Gizmos.DrawWireSphere(targetPosition, 0.5f);
+        private void OnCollisionExit(Collision collision) 
+    {
+        isCrash = false;
+    }
 
-    //     // 繪製扇形區域
-    //     Gizmos.color = Color.red;
-    //     DrawWireArc(transform.position, transform.up, transform.forward, alertAngle / 2, alertRadius, 45);
-    //     DrawWireArc(transform.position, transform.up, transform.forward, -alertAngle / 2, alertRadius, 45);
-    // }
+        void OnDrawGizmosSelected()
+    {
+        if (patrolPoint != null)
+        {
+            // 以不同顏色繪製移動範圍
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(patrolPoint.position, maxPatrolDistance);
+        }
+        else
+        {
+            // 以不同顏色繪製移動範圍
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, maxPatrolDistance);
+        }
+
+        // 移動目標
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(targetPosition, 0.5f);
+
+        // 繪製扇形區域
+        Gizmos.color = Color.red;
+        DrawWireArc(transform.position, transform.up, transform.forward, alertAngle / 2, alertRadius, 45);
+        DrawWireArc(transform.position, transform.up, transform.forward, -alertAngle / 2, alertRadius, 45);
+    }
 
     void DrawWireArc(Vector3 position, Vector3 up, Vector3 forward, float angle, float radius, int segments)
     {
@@ -159,7 +178,6 @@ public class GuardPatrol : MonoBehaviour
                         if (angleToPlayer <= alertAngle / 2 && angleToPlayer >= -alertAngle / 2)
                         {
                             Debug.Log("Game Over");
-                            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
                         }
                     }
                 }
