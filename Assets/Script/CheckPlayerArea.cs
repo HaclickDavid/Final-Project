@@ -12,6 +12,8 @@ public class CheckPlayerArea : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             checkPlayer = true;
+            Debug.Log("HERE");
+            Destroy(gameObject);
         }
     }
 

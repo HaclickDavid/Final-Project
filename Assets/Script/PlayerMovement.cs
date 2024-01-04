@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerCam : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class PlayerCam : MonoBehaviour
     Vector2 currentDir;
     Vector2 currentDirVelocity;
     Vector3 velocity;
+    private int hostageCount = 0;
+    public TextMeshProUGUI hostageCountText; // 顯示人質計數的TextMeshProUGUI元件
+
     
     // Start is called before the first frame update
     void Start()
@@ -35,6 +39,7 @@ public class PlayerCam : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = true;
         }
+        UpdateHostageCountText();
     }
 
     // Update is called once per frame
@@ -76,6 +81,25 @@ public class PlayerCam : MonoBehaviour
             velocityY = -8f;
         }
 
+    }
+     void OnTriggerEnter(Collider other)
+    {
+        // 當玩家碰到人質時，遞增人質計數
+        if (other.CompareTag("Hostage"))
+        {
+            hostageCount++;
+            UpdateHostageCountText();
+            Destroy(other);
+        }
+    }
+
+    void UpdateHostageCountText()
+    {
+        // 更新Canvas上的TextMeshProUGUI顯示
+        if (hostageCountText != null)
+        {
+            hostageCountText.text = "RESCUE: " + hostageCount.ToString();
+        }
     }
 
     

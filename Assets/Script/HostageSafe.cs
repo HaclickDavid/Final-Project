@@ -98,7 +98,7 @@ public class HostageSafe : MonoBehaviour
     private void LightGenerate()
     {
         lightObject = new GameObject("Ring_AutoGenerate");
-        Light lightComponent = lightObject.AddComponent<Light>();
+        
         if (checkPoint == null)
         {
             lightObject.transform.position = new Vector3 (transform.position.x, transform.position.y+0.3f, transform.position.z);
@@ -107,19 +107,21 @@ public class HostageSafe : MonoBehaviour
         {
             lightObject.transform.position = new Vector3 (checkPoint.position.x, transform.position.y+0.3f, checkPoint.position.z);
         }
+
+        Light lightComponent = lightObject.AddComponent<Light>();
         lightObject.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         lightComponent.type = LightType.Spot; 
         lightComponent.intensity = 100.0f; 
         lightComponent.spotAngle = 120f; 
-        lightComponent.color = Color.red;
+        lightComponent.color = Color.green;
         lightComponent.shadows = LightShadows.None; 
     }
 
     private void Rescue()
     {
-        checkPlayerHereArea.SetActive(false);
-        lightObject.SetActive(false);
-        gameObject.SetActive(false);
+        Destroy(lightObject);
+        Destroy(checkPlayerHereArea);
+        Destroy(gameObject);
     }
     
     void OnDrawGizmosSelected()
